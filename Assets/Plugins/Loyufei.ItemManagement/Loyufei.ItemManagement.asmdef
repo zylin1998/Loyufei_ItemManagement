@@ -1,0 +1,16 @@
+{
+    "name": "Loyufei.ItemManagement",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d24cd23c5ec8499429694033072ddd6c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

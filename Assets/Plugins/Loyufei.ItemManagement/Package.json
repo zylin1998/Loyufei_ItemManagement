@@ -1,0 +1,11 @@
+{
+  "name": "com.zylin1998.loyufei.itemmanagement",
+  "version": "1.0.0",
+  "displayName": "Loyufei Item Management Package",
+  "description": "Item Management from ZYLin1998.",
+  "unity": "2022.3",
+  "author": {
+    "name": "ZYLin1998"
+  },
+  "dependencies": {}
+}

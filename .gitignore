@@ -61,3 +61,21 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+
+Packages/
+
+ProjectSettings/
+
+UserSettings/
+
+.vsconfig
+
+Assets/Scenes/
+
+Assets/Plugins/UniRx/
+
+Assets/Plugins/Zenject/
+
+Assets/Plugins/UniRx.meta
+
+Assets/Plugins/Zenject.meta
