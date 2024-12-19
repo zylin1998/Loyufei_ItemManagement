@@ -29,7 +29,7 @@ namespace Loyufei.ItemManagement
 
             SettleEvents(events);
 
-            OnEnd();
+            OnManageEnd();
         }
 
         private void Remove(RemoveAtItem remove)
@@ -38,7 +38,7 @@ namespace Loyufei.ItemManagement
 
             if (remain > 0) { SettleEvents(new RemoveAtOverflow(remain)); }
 
-            OnEnd();
+            OnManageEnd();
         }
 
         private void Remove(RemoveItem remove) 
@@ -47,24 +47,24 @@ namespace Loyufei.ItemManagement
 
             if (remain > 0) { SettleEvents(new RemoveOverflow(remain)); }
 
-            OnEnd();
+            OnManageEnd();
         }
 
         private void Swap(SwapItem swap)
         {
             Model.Swap(swap.Index1, swap.Index2);
 
-            OnEnd();
+            OnManageEnd();
         }
 
         private void Deliver(DeliverItem deliver)
         {
             Model.Deliver(deliver.Id, deliver.Index1, deliver.Index2);
 
-            OnEnd();
+            OnManageEnd();
         }
 
-        protected virtual void OnEnd() 
+        protected virtual void OnManageEnd() 
         {
 
         }

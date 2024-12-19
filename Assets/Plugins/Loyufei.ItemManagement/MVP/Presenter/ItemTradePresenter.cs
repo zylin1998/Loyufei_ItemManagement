@@ -21,10 +21,10 @@ namespace Loyufei.ItemManagement
 
             if (result.overflow > 0) { }
 
-            SendAddEvent(result.info, result.preserve);
+            OnPurchaseEnd(result.info, result.preserve);
         }
 
-        protected virtual void SendAddEvent(TradeInfo info, int count) 
+        protected virtual void OnPurchaseEnd(TradeInfo info, int count) 
         {
             var (target,    add) = (info.Target.Item, info.Target.Count * count);
             var (paid  , remove) = (info.Paid  .Item, info.Paid  .Count * count);
