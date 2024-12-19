@@ -37,6 +37,6 @@ namespace Loyufei.ItemManagement
 
         public TradeItem Target   => _Target;
         public TradeItem Paid     => _Paid;
-        public int       Capacity => _Capacity > 0 ? _Capacity : int.MinValue;
+        public int       Capacity => _Capacity > 0 ? _Capacity : int.MaxValue;
     }
 }
