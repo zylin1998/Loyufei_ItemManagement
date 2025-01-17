@@ -1,13 +1,15 @@
 using System;
 using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loyufei.ItemManagement
 {
     [CreateAssetMenu(fileName = "ItemAssetInstaller", menuName = "Loyufei/Inventory/ItemAssetInstaller")]
-    public class ItemAssetInstaller : FileInstallAsset<ItemAssetInstaller.Saveable, ItemAssetInstaller.Channel>
+    public class ItemAssetInstaller : FileInstallAsset<ItemStorage, ItemAssetInstaller.Channel>
     {
-        protected override bool BindChannel(int index, Channel channel)
+        protected override bool BindChannel(Channel channel)
         {
             Container
                 .Bind<IItemCollection>()
@@ -23,7 +25,7 @@ namespace Loyufei.ItemManagement
                 .FromInstance(channel.Limitation)
                 .AsCached();
 
-            var instance = channel.GetOrCreate(index, out var hasCreate);
+            var instance = channel.GetOrCreate( out var hasCreate);
 
             Container
                 .Bind<IItemStorage>()
@@ -36,7 +38,7 @@ namespace Loyufei.ItemManagement
         }
 
         [Serializable]
-        public class Channel : Channel<IItemStorage>
+        public new class Channel : FileInstallAsset<ItemStorage, Channel>.Channel
         {
             [Header("¸ê·½³sµ²")]
             [SerializeField]
@@ -61,11 +63,11 @@ namespace Loyufei.ItemManagement
             public int MaxCapacity  => _MaxCapacity;
             public int InitCapacity => _InitCapacity;
 
-            public override object GetOrCreate(int index, out bool hasCreate)
+            public override object GetOrCreate(out bool hasCreate)
             {
                 var added = false;
                 
-                var instance = _Saveable.GetOrAdd(index, () =>
+                var instance = _Saveable.GetOrAdd(Identity, () =>
                 {
                     added = true;
 
@@ -77,26 +79,6 @@ namespace Loyufei.ItemManagement
                 instance.Reset(IsLimit, RemoveReleased, MaxCapacity, InitCapacity);
 
                 return instance;
-            }
-        }
-
-        [Serializable]
-        public class Saveable : IAdjustableSaveable<IItemStorage>
-        {
-            [SerializeField]
-            private ItemStorage[] _Storages = new ItemStorage[0];
-
-            public IItemStorage GetOrAdd(int index, Func<IItemStorage> add)
-            {
-                if (index < _Storages.Length) { return _Storages[index]; }
-
-                if (index > _Storages.Length) { return default; }
-
-                var storage = add.Invoke();
-
-                _Storages = _Storages.Append((ItemStorage)storage).ToArray();
-
-                return _Storages[index];
             }
         }
     }

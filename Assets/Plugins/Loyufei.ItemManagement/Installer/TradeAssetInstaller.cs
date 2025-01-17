@@ -5,9 +5,9 @@ using UnityEngine;
 namespace Loyufei.ItemManagement
 {
     [CreateAssetMenu(fileName = "TradeAssetInstaller", menuName = "Loyufei/Inventory/TradeAssetInstaller")]
-    public class TradeAssetInstaller : FileInstallAsset<TradeAssetInstaller.Saveable, TradeAssetInstaller.Channel>
+    public class TradeAssetInstaller : FileInstallAsset<TradeLog, TradeAssetInstaller.Channel>
     {
-        protected override bool BindChannel(int index, Channel channel)
+        protected override bool BindChannel(Channel channel)
         {
             Container
                 .Bind<IItemTrade>()
@@ -16,7 +16,7 @@ namespace Loyufei.ItemManagement
                 .FromInstance(channel.Trade)
                 .AsCached();
 
-            var instance = channel.GetOrCreate(index, out var hasCreate);
+            var instance = channel.GetOrCreate(out var hasCreate);
 
             Container
                 .Bind<ITradeLog>()
@@ -29,27 +29,7 @@ namespace Loyufei.ItemManagement
         }
 
         [Serializable]
-        public class Saveable : IAdjustableSaveable<ITradeLog>
-        {
-            [SerializeField]
-            private TradeLog[] _TradeLogs = new TradeLog[0];
-
-            public ITradeLog GetOrAdd(int index, Func<ITradeLog> add)
-            {
-                if (index < _TradeLogs.Length) { return _TradeLogs[index]; }
-
-                if (index > _TradeLogs.Length) { return default; }
-
-                var log = add.Invoke();
-
-                _TradeLogs = _TradeLogs.Append((TradeLog)log).ToArray();
-
-                return _TradeLogs[index];
-            }
-        }
-
-        [Serializable]
-        public class Channel : Channel<ITradeLog>
+        public new class Channel : FileInstallAsset<TradeLog, Channel>.Channel
         {
             [Header("¸ê·½³sµ²")]
             [SerializeField]
@@ -57,11 +37,11 @@ namespace Loyufei.ItemManagement
 
             public IItemTrade Trade    => _Trade;
             
-            public override object GetOrCreate(int index, out bool hasCreate)
+            public override object GetOrCreate(out bool hasCreate)
             {
                 var added = false;
 
-                var instance = _Saveable.GetOrAdd(index, () =>
+                var instance = _Saveable.GetOrAdd(Identity, () =>
                 {
                     added = true;
 
