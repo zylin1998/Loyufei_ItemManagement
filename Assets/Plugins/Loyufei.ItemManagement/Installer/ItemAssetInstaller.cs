@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Loyufei.ItemManagement
 {
     [CreateAssetMenu(fileName = "ItemAssetInstaller", menuName = "Loyufei/Inventory/ItemAssetInstaller")]
-    public class ItemAssetInstaller : FileInstallAsset<ItemStorage, ItemAssetInstaller.Channel>
+    public class ItemAssetInstaller : FileInstallAsset<IItemStorage, ItemAssetInstaller.Channel>
     {
         protected override bool BindChannel(Channel channel)
         {
@@ -25,7 +25,7 @@ namespace Loyufei.ItemManagement
                 .FromInstance(channel.Limitation)
                 .AsCached();
 
-            var instance = channel.GetOrCreate( out var hasCreate);
+            var hasCreate = channel.GetOrCreate( out var instance);
 
             Container
                 .Bind<IItemStorage>()
@@ -38,7 +38,7 @@ namespace Loyufei.ItemManagement
         }
 
         [Serializable]
-        public new class Channel : FileInstallAsset<ItemStorage, Channel>.Channel
+        public class Channel : Channel<IItemStorage>
         {
             [Header("¸ê·½³sµ²")]
             [SerializeField]
@@ -63,22 +63,20 @@ namespace Loyufei.ItemManagement
             public int MaxCapacity  => _MaxCapacity;
             public int InitCapacity => _InitCapacity;
 
-            public override object GetOrCreate(out bool hasCreate)
+            public override bool GetOrCreate(out IItemStorage instance)
             {
-                var added = false;
+                var result = false;
                 
-                var instance = _Saveable.GetOrAdd(Identity, () =>
+                instance = _Saveable.GetOrAdd(Identity, () =>
                 {
-                    added = true;
+                    result = true;
 
                     return new ItemStorage();
                 });
 
-                hasCreate = added;
-
                 instance.Reset(IsLimit, RemoveReleased, MaxCapacity, InitCapacity);
 
-                return instance;
+                return result;
             }
         }
     }

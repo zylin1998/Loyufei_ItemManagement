@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Loyufei.ItemManagement
 {
     [CreateAssetMenu(fileName = "TradeAssetInstaller", menuName = "Loyufei/Inventory/TradeAssetInstaller")]
-    public class TradeAssetInstaller : FileInstallAsset<TradeLog, TradeAssetInstaller.Channel>
+    public class TradeAssetInstaller : FileInstallAsset<ITradeLog, TradeAssetInstaller.Channel>
     {
         protected override bool BindChannel(Channel channel)
         {
@@ -16,7 +16,7 @@ namespace Loyufei.ItemManagement
                 .FromInstance(channel.Trade)
                 .AsCached();
 
-            var instance = channel.GetOrCreate(out var hasCreate);
+            var hasCreate = channel.GetOrCreate(out var instance);
 
             Container
                 .Bind<ITradeLog>()
@@ -29,7 +29,7 @@ namespace Loyufei.ItemManagement
         }
 
         [Serializable]
-        public new class Channel : FileInstallAsset<TradeLog, Channel>.Channel
+        public class Channel : Channel<ITradeLog>
         {
             [Header("¸ê·½³sµ²")]
             [SerializeField]
@@ -37,20 +37,18 @@ namespace Loyufei.ItemManagement
 
             public IItemTrade Trade    => _Trade;
             
-            public override object GetOrCreate(out bool hasCreate)
+            public override bool GetOrCreate(out ITradeLog instance)
             {
                 var added = false;
 
-                var instance = _Saveable.GetOrAdd(Identity, () =>
+                instance = _Saveable.GetOrAdd(Identity, () =>
                 {
                     added = true;
 
                     return new TradeLog();
                 });
 
-                hasCreate = added;
-
-                return instance;
+                return added;
             }
         }
     }
