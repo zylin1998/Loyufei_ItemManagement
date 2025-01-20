@@ -13,7 +13,7 @@ namespace Loyufei.ItemManagement
 
             var add = reposit.Data + count;
 
-            reposit.Preserve(add.Clamp(0, capacity));
+            reposit.Preserve(add.Clamp(0, capacity > 0 ? capacity : int.MaxValue));
 
             return (add - capacity).Clamp(0, count);
         }
